@@ -7,30 +7,29 @@
 
 <style>
 :root{
-  --bg-main:#eef6f1;
-  --bg-card:#ffffff;
+  --bg:#eef6f1;
+  --card:#ffffff;
   --primary:#5fb3a2;
-  --secondary:#ffd166;
+  --warn:#ffd166;
   --danger:#ef476f;
-  --text-dark:#2f3e46;
 }
 
 *{box-sizing:border-box}
-
 body{
   margin:0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background:var(--bg-main);
-  color:var(--text-dark);
+  font-family:system-ui;
+  background:var(--bg);
 }
 
 /* ===== TOP STICKY ===== */
-#topBar{
-  position:sticky;
+#top{
+  position:fixed;
   top:0;
-  z-index:1000;
-  background:var(--bg-main);
+  left:0;
+  width:100vw;
+  background:var(--bg);
   padding:12px;
+  z-index:1000;
 }
 
 #title{
@@ -40,7 +39,7 @@ body{
   margin-bottom:10px;
 }
 
-#mainControls{
+#topBtns{
   display:flex;
   gap:10px;
 }
@@ -51,16 +50,16 @@ body{
   border:none;
   border-radius:18px;
   font-weight:700;
-  font-size:14px;
 }
 
-.play{background:var(--primary);color:#fff;}
-.pause{background:var(--secondary);}
-.stop{background:var(--danger);color:#fff;}
+.play{background:var(--primary);color:#fff}
+.pause{background:var(--warn)}
+.stop{background:var(--danger);color:#fff}
 
 /* ===== TABLE ===== */
-.table-wrap{
-  margin-bottom:90px;
+.wrapper{
+  padding-top:140px;
+  padding-bottom:100px;
 }
 
 table{
@@ -70,20 +69,19 @@ table{
 
 thead{
   position:sticky;
-  top:118px;
+  top:140px;
   z-index:500;
 }
 
 th{
   background:#dcefe8;
   padding:10px;
-  font-size:13px;
 }
 
 td{
-  background:var(--bg-card);
+  background:#fff;
   padding:10px;
-  border-bottom:1px solid #e0e0e0;
+  border-bottom:1px solid #ddd;
 }
 
 tr.active td{
@@ -94,74 +92,69 @@ tr.active td{
   background:#7b9fe0;
   color:#fff;
   border:none;
-  padding:8px 10px;
-  border-radius:12px;
+  padding:6px 10px;
+  border-radius:10px;
 }
 
 /* ===== BOTTOM STICKY ===== */
-#bottomBar{
+#bottom{
   position:fixed;
   bottom:0;
   left:0;
-  width:100%;
-  background:var(--bg-main);
+  width:100vw;
+  background:var(--bg);
   padding:12px;
   display:flex;
   gap:8px;
-  z-index:1000;
+  align-items:center;
 }
 
 #startRow{
   width:60px;
-  border-radius:12px;
   border:none;
+  border-radius:12px;
   padding:8px;
-  text-align:center;
 }
 
 #timer{
   margin-left:auto;
-  font-weight:700;
-  padding:10px 14px;
   background:#fff;
+  padding:10px 16px;
   border-radius:14px;
+  font-weight:700;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== TOP ===== -->
-<div id="topBar">
+<!-- TOP -->
+<div id="top">
   <div id="title">Spelling Bee – Writing Practice</div>
-  <div id="mainControls">
+  <div id="topBtns">
     <button class="btn play" onclick="playAll()">▶ Play All</button>
-    <button class="btn pause" onclick="pauseResume()">⏸ Pause</button>
-    <button class="btn stop" onclick="stopPlay()">⏹ Stop</button>
+    <button class="btn pause" onclick="pauseResume()" id="pauseBtn">⏸ Pause</button>
+    <button class="btn stop" onclick="stopAll()">⏹ Stop</button>
   </div>
 </div>
 
 <input type="file" accept=".csv" onchange="loadCSV(event)" style="margin:10px">
 
-<!-- ===== TABLE ===== -->
-<div class="table-wrap">
+<!-- TABLE -->
+<div class="wrapper">
 <table>
 <thead>
 <tr>
-  <th>No.</th>
-  <th>Word</th>
-  <th>Sentence</th>
-  <th>Word</th>
-  <th>Spelling</th>
+  <th>No</th><th>Word</th><th>Sentence</th><th>Word</th><th>Spelling</th>
 </tr>
 </thead>
-<tbody id="data"></tbody>
+<tbody id="tbody"></tbody>
 </table>
 </div>
 
-<!-- ===== BOTTOM ===== -->
-<div id="bottomBar">
-  Start Row
+<!-- BOTTOM -->
+<div id="bottom">
+  Start
   <input type="number" id="startRow" value="1" min="1">
   <button class="btn play" onclick="playFromRow()">▶</button>
   <button class="btn pause" onclick="toggleBell()" id="bellBtn">🔔</button>
@@ -169,13 +162,22 @@ tr.active td{
 </div>
 
 <script>
-let rows=[],current=0,playing=false,paused=false,bellOn=true,timerInt;
+let rows=[], current=0, playing=false, paused=false;
+let bellOn=true, timerInt;
+const ctx=new (window.AudioContext||webkitAudioContext)();
+
+function beep(freq){
+  const o=ctx.createOscillator(), g=ctx.createGain();
+  o.frequency.value=freq;
+  o.connect(g); g.connect(ctx.destination);
+  o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.15);
+}
 
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
-const speak=t=>new Promise(res=>{
+const speak=t=>new Promise(r=>{
   let u=new SpeechSynthesisUtterance(t);
   u.lang="en-US";
-  u.onend=res;
+  u.onend=r;
   speechSynthesis.speak(u);
 });
 
@@ -189,7 +191,7 @@ function loadCSV(e){
 }
 
 function render(){
-  data.innerHTML="";
+  tbody.innerHTML="";
   rows.forEach((r,i)=>{
     let tr=document.createElement("tr");
     r.forEach(c=>{
@@ -201,21 +203,19 @@ function render(){
     let b=document.createElement("button");
     b.textContent="Spell";
     b.className="spellBtn";
-    b.onclick=()=>spellRow(i);
+    b.onclick=()=>spell(i);
     td.appendChild(b);
     tr.appendChild(td);
-    data.appendChild(tr);
+    tbody.appendChild(tr);
   });
 }
 
 async function playRow(i){
   document.querySelectorAll("tr").forEach(r=>r.classList.remove("active"));
-  data.children[i].classList.add("active");
+  tbody.children[i].classList.add("active");
 
-  await speak(rows[i][1]);
-  await wait(500);
-  await speak(rows[i][2]);
-  await wait(500);
+  await speak(rows[i][1]); await wait(500);
+  await speak(rows[i][2]); await wait(500);
   await speak(rows[i][3]);
   await startTimer();
 }
@@ -226,19 +226,16 @@ function startTimer(){
     timer.textContent=t;
     timerInt=setInterval(()=>{
       if(paused) return;
-      t--;
-      timer.textContent=t;
-      if(bellOn && t<=20) navigator.vibrate?.(50);
-      if(t<=0){
-        clearInterval(timerInt);
-        res();
-      }
+      t--; timer.textContent=t;
+      if(bellOn) beep(400+((20-t)*40));
+      if(t<=0){clearInterval(timerInt);res();}
     },1000);
   });
 }
 
 async function playAll(){
-  stopPlay();
+  stopAll();
+  current=0;
   playing=true;
   for(;current<rows.length && playing;current++){
     while(paused) await wait(200);
@@ -247,19 +244,25 @@ async function playAll(){
 }
 
 function playFromRow(){
-  stopPlay();
+  stopAll();
   current=Math.max(0,startRow.value-1);
+  playing=true;
   playAll();
 }
 
-function pauseResume(){paused=!paused;}
-function stopPlay(){
-  playing=false;paused=false;
+function pauseResume(){
+  paused=!paused;
+  pauseBtn.textContent=paused?"▶ Resume":"⏸ Pause";
+}
+
+function stopAll(){
+  playing=false; paused=false;
+  pauseBtn.textContent="⏸ Pause";
   speechSynthesis.cancel();
   clearInterval(timerInt);
 }
 
-async function spellRow(i){
+async function spell(i){
   let w=rows[i][3];
   await speak(w); await wait(400);
   for(let c of w){await speak(c); await wait(400);}
