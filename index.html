@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Spelling Bee</title>
+<title>Spelling Bee - Writing Practice</title>
 
 <style>
 /* ===== GLOBAL ===== */
@@ -18,32 +17,70 @@ body {
 .top-sticky {
   position: sticky;
   top: 0;
-  background: #1e3a8a;
-  color: white;
-  padding: 10px;
   z-index: 1000;
+  background: linear-gradient(135deg, #1e3a8a, #1e40af);
+  color: white;
+  padding: 14px 12px;
 }
 
-.top-sticky h1 {
-  margin: 0 0 8px;
-  font-size: 18px;
+.top-title {
   text-align: center;
 }
 
+.top-title h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.top-title p {
+  margin: 6px 0 12px;
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+/* ===== TOP BUTTONS ===== */
 .top-buttons {
   display: flex;
-  justify-content: space-between;
-  gap: 6px;
+  gap: 8px;
 }
 
 .top-buttons button {
   flex: 1;
   padding: 10px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   font-size: 14px;
   color: white;
   background: #2563eb;
+}
+
+.top-buttons button:active {
+  transform: scale(0.97);
+}
+
+/* ===== FILE BAR ===== */
+.file-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.file-bar input[type="file"] {
+  flex: 1;
+  font-size: 12px;
+}
+
+/* ===== HELP BUTTON ===== */
+.help-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #6366f1;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 /* ===== TABLE ===== */
@@ -53,8 +90,9 @@ table {
 }
 
 td {
-  padding: 10px;
+  padding: 12px 10px;
   border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
 }
 
 tr.active {
@@ -66,11 +104,15 @@ tr.active {
   position: sticky;
   bottom: 0;
   background: #e0f2fe;
-  padding: 8px;
+  padding: 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   z-index: 1000;
+}
+
+.bottom-sticky label {
+  font-size: 13px;
 }
 
 .bottom-sticky input {
@@ -84,20 +126,9 @@ tr.active {
   margin-left: auto;
   background: #1e40af;
   color: white;
-  padding: 6px 12px;
-  border-radius: 10px;
+  padding: 8px 14px;
+  border-radius: 12px;
   font-weight: bold;
-}
-
-/* ===== HELP BUTTON ===== */
-.help-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: #6366f1;
-  color: white;
-  font-size: 18px;
 }
 
 /* ===== MODAL ===== */
@@ -132,6 +163,7 @@ tr.active {
 
 .help-item {
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .tips-box {
@@ -139,6 +171,7 @@ tr.active {
   padding: 10px;
   border-left: 5px solid #0ea5e9;
   border-radius: 8px;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -147,28 +180,36 @@ tr.active {
 
 <!-- ===== TOP ===== -->
 <div class="top-sticky">
-  <h1>Spelling Bee - Writing Practice</h1>
+  <div class="top-title">
+    <h1>Spelling Bee - Writing Practice</h1>
+    <p>
+      Aplikasi ini membantu latihan Spelling Bee untuk
+      <b>writing</b> dan <b>speaking</b> melalui pembacaan kata,
+      kalimat, dan ejaan secara otomatis.
+    </p>
+  </div>
+
   <div class="top-buttons">
-    <button>▶ Play All</button>
-    <button>⏸ Pause</button>
-    <button>⏹ Stop</button>
+    <button id="playAll">▶ Play All</button>
+    <button id="pauseResume">⏸ Pause</button>
+    <button id="stop">⏹ Stop</button>
+  </div>
+
+  <div class="file-bar">
+    <input type="file" id="fileInput" accept=".csv">
+    <button id="helpBtn" class="help-btn">❓</button>
   </div>
 </div>
 
 <!-- ===== TABLE ===== -->
 <table id="wordTable">
-  <tr><td>1</td><td>apple</td><td>I eat an apple</td></tr>
-  <tr><td>2</td><td>banana</td><td>I like banana</td></tr>
+  <!-- Data dari CSV -->
 </table>
 
 <!-- ===== BOTTOM ===== -->
 <div class="bottom-sticky">
   <label>Start Row</label>
-  <input type="number" min="1" value="1">
-
-  <!-- HELP BUTTON SEJAJAR DI SINI -->
-  <button id="helpBtn" class="help-btn">❓</button>
-
+  <input type="number" id="startRow" min="1" value="1">
   <div class="timer-box" id="timer">20</div>
 </div>
 
@@ -180,14 +221,14 @@ tr.active {
     <h2>📘 Cara Menggunakan</h2>
 
     <div class="help-item">▶ <b>Play All</b> – Membaca semua baris otomatis</div>
-    <div class="help-item">⏸ <b>Pause</b> – Menjeda suara & timer</div>
-    <div class="help-item">⏹ <b>Stop</b> – Hentikan dan reset</div>
-    <div class="help-item">🔊 <b>Speak</b> – Latihan speaking</div>
-    <div class="help-item">🔠 <b>Spell</b> – Latihan ejaan</div>
+    <div class="help-item">⏸ <b>Pause / Resume</b> – Menjeda dan melanjutkan</div>
+    <div class="help-item">⏹ <b>Stop</b> – Menghentikan dan reset</div>
+    <div class="help-item">🔊 <b>Speak</b> – Latihan speaking per baris</div>
+    <div class="help-item">🔠 <b>Spell</b> – Membaca ejaan kata</div>
 
     <div class="tips-box">
-      📝 <b>Play All</b> untuk latihan <b>Writing Spelling Bee</b><br>
-      🗣️ <b>Speak</b> untuk latihan <b>Speaking Spelling Bee</b>
+      📝 <b>Play All</b> → Latihan <b>Writing Spelling Bee</b><br>
+      🗣️ <b>Speak</b> → Latihan <b>Speaking Spelling Bee</b>
     </div>
   </div>
 </div>
