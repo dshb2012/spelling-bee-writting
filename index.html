@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>SPELLING BEE</title>
+<title>Spelling Bee</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -94,7 +94,6 @@ tr.active td{background:#fff3bf;}
 .sentence{
   font-size:14px;
   line-height:1.5;
-  word-break:normal;
   overflow-wrap:break-word;
 }
 .spellBtn{
@@ -149,7 +148,7 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 
 <!-- TOP -->
 <div id="top">
-  <div id="title">SPELLING BEE</div>
+  <div class="title" id="title">Spelling Bee</div>
   <div id="topBtns">
     <button class="btn play" onclick="playAll()">▶ PLAY ALL</button>
     <button class="btn pause" id="pauseBtn" onclick="pauseResume()">⏸ PAUSE</button>
@@ -190,13 +189,12 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 </div>
 
 <script>
-let rows=[];
-let current=0, playing=false, paused=false;
+let rows=[], current=0, playing=false, paused=false;
 let bellOn=true, timerInterval=null;
 const audioCtx=new (window.AudioContext||webkitAudioContext)();
 
 /* ===== UTIL ===== */
-function clearTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+function clearTimer(){ if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
 async function wait(ms){
   let t=0;
   while(t<ms){
@@ -212,22 +210,31 @@ function speak(text){
     speechSynthesis.speak(u);
   });
 }
-function buttonFeedback(){
-  if(navigator.vibrate)navigator.vibrate(30);
+
+/* ===== TIMER SOUND ===== */
+function tick(){
+  if(!bellOn) return;
   const o=audioCtx.createOscillator();
   const g=audioCtx.createGain();
-  o.frequency.value=600;
-  g.gain.value=0.05;
-  o.connect(g);g.connect(audioCtx.destination);
-  o.start();o.stop(audioCtx.currentTime+0.08);
-}
-function beep(freq){
-  const o=audioCtx.createOscillator();
-  const g=audioCtx.createGain();
-  o.frequency.value=freq;
-  o.connect(g);g.connect(audioCtx.destination);
+  o.type="triangle";
+  o.frequency.value=700;
+  g.gain.value=0.025;
+  o.connect(g); g.connect(audioCtx.destination);
   o.start();
-  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.2);
+  o.stop(audioCtx.currentTime+0.07);
+}
+function endBell(){
+  if(!bellOn) return;
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.type="sine";
+  o.frequency.setValueAtTime(880,audioCtx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(440,audioCtx.currentTime+0.8);
+  g.gain.setValueAtTime(0.18,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.9);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  o.stop(audioCtx.currentTime+0.9);
 }
 
 /* ===== CSV ===== */
@@ -235,7 +242,7 @@ function loadCSV(e){
   const r=new FileReader();
   r.onload=()=>{
     const lines=r.result.trim().split("\n").map(l=>l.split(","));
-    lines.shift(); // skip header
+    lines.shift();
     rows=lines;
     render();
   };
@@ -252,8 +259,8 @@ function render(){
       <td class="word">${r[1]}</td>
       <td class="sentence">${r[2]}</td>
       <td>
-        <button class="spellBtn" onclick="speakRow(${i})">🔊 SPEAK</button>
-        <button class="spellBtn" onclick="spell(${i})">🔠 SPELL</button>
+        <button class="spellBtn" onclick="speakRow(${i})">🔊 Speak</button>
+        <button class="spellBtn" onclick="spell(${i})">🔠 Spell</button>
       </td>`;
     tbody.appendChild(tr);
   });
@@ -270,12 +277,17 @@ function timer20(){
     clearTimer();
     let t=20;
     timer.textContent=t;
+    tick(); // bunyi tepat saat 20 muncul
     timerInterval=setInterval(()=>{
-      if(paused)return;
+      if(paused) return;
       t--;
       timer.textContent=t;
-      if(bellOn)beep(300+(20-t)*25);
-      if(t<=0){clearTimer();res();}
+      if(t>0) tick();
+      if(t===0){
+        clearTimer();
+        endBell();
+        setTimeout(res,1000);
+      }
     },1000);
   });
 }
@@ -291,32 +303,26 @@ async function playRow(i){
   await speak(w);
   await timer20();
 }
-
 async function playAll(){
-  buttonFeedback();
   stopAll();
-  current=0;
-  playing=true;
+  current=0; playing=true;
   for(;current<rows.length && playing;current++){
-    while(paused)await wait(200);
+    while(paused) await wait(200);
     await playRow(current);
   }
 }
-
 async function playFromRow(){
-  buttonFeedback();
   stopAll();
   current=Math.max(0,startRow.value-1);
   playing=true;
   for(;current<rows.length && playing;current++){
-    while(paused)await wait(200);
+    while(paused) await wait(200);
     await playRow(current);
   }
 }
 
 /* ===== MANUAL ===== */
 async function speakRow(i){
-  buttonFeedback();
   stopAll();
   focusRow(i);
   const w=rows[i][1], s=rows[i][2];
@@ -326,9 +332,7 @@ async function speakRow(i){
   await wait(500);
   await speak(w);
 }
-
 async function spell(i){
-  buttonFeedback();
   stopAll();
   focusRow(i);
   const w=rows[i][1];
@@ -343,21 +347,18 @@ async function spell(i){
 
 /* ===== CONTROL ===== */
 function pauseResume(){
-  buttonFeedback();
   paused=!paused;
   paused?speechSynthesis.pause():speechSynthesis.resume();
   pauseBtn.textContent=paused?"▶ RESUME":"⏸ PAUSE";
 }
 function stopAll(){
-  playing=false;
-  paused=false;
+  playing=false; paused=false;
   speechSynthesis.cancel();
   clearTimer();
   timer.textContent="20";
-  pauseBtn.textContent="⏸ Pause";
+  pauseBtn.textContent="⏸ PAUSE";
 }
 function toggleBell(){
-  buttonFeedback();
   bellOn=!bellOn;
   bellBtn.textContent=bellOn?"🔔":"🔕";
 }
@@ -365,4 +366,3 @@ function toggleBell(){
 
 </body>
 </html>
-
