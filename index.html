@@ -6,127 +6,145 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f8fafc;
+:root{
+  --bg-main:#eef6f1;
+  --bg-card:#ffffff;
+  --primary:#5fb3a2;
+  --secondary:#ffd166;
+  --danger:#ef476f;
+  --text-dark:#2f3e46;
 }
 
-/* ===== STICKY HEADER ===== */
-#header {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background:var(--bg-main);
+  color:var(--text-dark);
 }
 
-/* TITLE */
-#appTitle {
-  text-align: center;
-  padding: 12px;
-  font-size: 22px;
-  font-weight: bold;
-  color: #2563eb;
-  border-bottom: 1px solid #e5e7eb;
+/* ===== TOP STICKY ===== */
+#topBar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:var(--bg-main);
+  padding:12px;
 }
 
-/* CONTROL PANEL */
-#controlPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px;
+#title{
+  text-align:center;
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:10px;
 }
 
-/* ROWS */
-.control-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+#mainControls{
+  display:flex;
+  gap:10px;
 }
 
-/* BUTTONS */
-button {
-  border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
+.btn{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:18px;
+  font-weight:700;
+  font-size:14px;
 }
 
-.play { background: #22c55e; color: white; }
-.pause { background: #facc15; color: #333; }
-.stop { background: #ef4444; color: white; }
-.bell { background: #3b82f6; color: white; }
+.play{background:var(--primary);color:#fff;}
+.pause{background:var(--secondary);}
+.stop{background:var(--danger);color:#fff;}
 
-#timerDisplay {
-  margin-left: auto;
-  background: #f1f5f9;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-weight: bold;
+/* ===== TABLE ===== */
+.table-wrap{
+  margin-bottom:90px;
 }
 
-/* TABLE */
-table {
-  width: 100%;
-  border-collapse: collapse;
+table{
+  width:100%;
+  border-collapse:collapse;
 }
 
-th {
-  background: #e0e7ff;
-  padding: 10px;
+thead{
+  position:sticky;
+  top:118px;
+  z-index:500;
 }
 
-td {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
+th{
+  background:#dcefe8;
+  padding:10px;
+  font-size:13px;
 }
 
-tr.active {
-  background: #fff6cc;
+td{
+  background:var(--bg-card);
+  padding:10px;
+  border-bottom:1px solid #e0e0e0;
 }
 
-.spellBtn {
-  background: #6366f1;
-  color: white;
-  border-radius: 8px;
-  padding: 6px 10px;
+tr.active td{
+  background:#fff3bf;
+}
+
+.spellBtn{
+  background:#7b9fe0;
+  color:#fff;
+  border:none;
+  padding:8px 10px;
+  border-radius:12px;
+}
+
+/* ===== BOTTOM STICKY ===== */
+#bottomBar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:var(--bg-main);
+  padding:12px;
+  display:flex;
+  gap:8px;
+  z-index:1000;
+}
+
+#startRow{
+  width:60px;
+  border-radius:12px;
+  border:none;
+  padding:8px;
+  text-align:center;
+}
+
+#timer{
+  margin-left:auto;
+  font-weight:700;
+  padding:10px 14px;
+  background:#fff;
+  border-radius:14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ===== HEADER ===== -->
-<div id="header">
-  <div id="appTitle">Spelling Bee – Writing Practice</div>
-
-  <div id="controlPanel">
-    <!-- TOP ROW -->
-    <div class="control-row">
-      <button class="play" onclick="playAll()">▶ Play All</button>
-      <button class="pause" onclick="pauseResume()">⏸ Pause / Resume</button>
-      <button class="stop" onclick="stopPlay()">⏹ Stop</button>
-    </div>
-
-    <!-- BOTTOM ROW -->
-    <div class="control-row">
-      Start Row:
-      <input type="number" id="startRow" value="1" min="1" style="width:60px;">
-      <button class="play" onclick="playFromRow()">▶</button>
-
-      <button class="bell" id="bellBtn" onclick="toggleBell()">🔔 Bell ON</button>
-
-      <span id="timerDisplay">⏱ 20</span>
-    </div>
+<!-- ===== TOP ===== -->
+<div id="topBar">
+  <div id="title">Spelling Bee – Writing Practice</div>
+  <div id="mainControls">
+    <button class="btn play" onclick="playAll()">▶ Play All</button>
+    <button class="btn pause" onclick="pauseResume()">⏸ Pause</button>
+    <button class="btn stop" onclick="stopPlay()">⏹ Stop</button>
   </div>
 </div>
 
-<input type="file" accept=".csv" onchange="loadCSV(event)" style="margin:10px;">
+<input type="file" accept=".csv" onchange="loadCSV(event)" style="margin:10px">
 
+<!-- ===== TABLE ===== -->
+<div class="table-wrap">
 <table>
 <thead>
 <tr>
@@ -137,150 +155,120 @@ tr.active {
   <th>Spelling</th>
 </tr>
 </thead>
-<tbody id="dataTable"></tbody>
+<tbody id="data"></tbody>
 </table>
+</div>
+
+<!-- ===== BOTTOM ===== -->
+<div id="bottomBar">
+  Start Row
+  <input type="number" id="startRow" value="1" min="1">
+  <button class="btn play" onclick="playFromRow()">▶</button>
+  <button class="btn pause" onclick="toggleBell()" id="bellBtn">🔔</button>
+  <div id="timer">20</div>
+</div>
 
 <script>
-let rows = [];
-let currentRow = 0;
-let playing = false;
-let paused = false;
-let bellMuted = false;
-let timerInterval;
-let beepCtx;
+let rows=[],current=0,playing=false,paused=false,bellOn=true,timerInt;
 
-/* ===== UTIL ===== */
-const wait = ms => new Promise(r => setTimeout(r, ms));
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+const speak=t=>new Promise(res=>{
+  let u=new SpeechSynthesisUtterance(t);
+  u.lang="en-US";
+  u.onend=res;
+  speechSynthesis.speak(u);
+});
 
-function speak(text) {
-  return new Promise(resolve => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "en-US";
-    u.onend = resolve;
-    speechSynthesis.speak(u);
-  });
-}
-
-/* ===== BELL ===== */
-function beep(freq=800, dur=0.15) {
-  if (bellMuted) return;
-  if (!beepCtx) beepCtx = new (window.AudioContext || window.webkitAudioContext)();
-  const osc = beepCtx.createOscillator();
-  const gain = beepCtx.createGain();
-  osc.frequency.value = freq;
-  osc.connect(gain);
-  gain.connect(beepCtx.destination);
-  osc.start();
-  gain.gain.exponentialRampToValueAtTime(0.001, beepCtx.currentTime + dur);
-  osc.stop(beepCtx.currentTime + dur);
-}
-
-/* ===== CSV ===== */
-function loadCSV(e) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    rows = reader.result.trim().split("\n").map(r => r.split(","));
-    renderTable();
+function loadCSV(e){
+  const r=new FileReader();
+  r.onload=()=>{
+    rows=r.result.trim().split("\n").map(a=>a.split(","));
+    render();
   };
-  reader.readAsText(e.target.files[0]);
+  r.readAsText(e.target.files[0]);
 }
 
-/* ===== RENDER ===== */
-function renderTable() {
-  dataTable.innerHTML = "";
-  rows.forEach((r,i) => {
-    const tr = document.createElement("tr");
-    r.forEach(c => {
-      const td = document.createElement("td");
-      td.textContent = c;
+function render(){
+  data.innerHTML="";
+  rows.forEach((r,i)=>{
+    let tr=document.createElement("tr");
+    r.forEach(c=>{
+      let td=document.createElement("td");
+      td.textContent=c;
       tr.appendChild(td);
     });
-    const td = document.createElement("td");
-    const btn = document.createElement("button");
-    btn.textContent = "🔤 Spell";
-    btn.className = "spellBtn";
-    btn.onclick = () => spellingRow(i);
-    td.appendChild(btn);
+    let td=document.createElement("td");
+    let b=document.createElement("button");
+    b.textContent="Spell";
+    b.className="spellBtn";
+    b.onclick=()=>spellRow(i);
+    td.appendChild(b);
     tr.appendChild(td);
-    dataTable.appendChild(tr);
+    data.appendChild(tr);
   });
 }
 
-/* ===== TIMER ===== */
-function startTimer() {
-  return new Promise(resolve => {
-    let t = 20;
-    timerDisplay.textContent = `⏱ ${t}`;
-    timerInterval = setInterval(() => {
-      if (paused) return;
-      t--;
-      timerDisplay.textContent = `⏱ ${t}`;
-      beep(600 + (20 - t) * 20);
-      if (t <= 0) {
-        clearInterval(timerInterval);
-        resolve();
-      }
-    }, 1000);
-  });
-}
-
-/* ===== PLAY ===== */
-async function playRow(i) {
-  document.querySelectorAll("tr").forEach(r => r.classList.remove("active"));
-  document.querySelectorAll("tr")[i+1].classList.add("active");
+async function playRow(i){
+  document.querySelectorAll("tr").forEach(r=>r.classList.remove("active"));
+  data.children[i].classList.add("active");
 
   await speak(rows[i][1]);
   await wait(500);
   await speak(rows[i][2]);
   await wait(500);
   await speak(rows[i][3]);
-
   await startTimer();
 }
 
-async function playAll() {
+function startTimer(){
+  return new Promise(res=>{
+    let t=20;
+    timer.textContent=t;
+    timerInt=setInterval(()=>{
+      if(paused) return;
+      t--;
+      timer.textContent=t;
+      if(bellOn && t<=20) navigator.vibrate?.(50);
+      if(t<=0){
+        clearInterval(timerInt);
+        res();
+      }
+    },1000);
+  });
+}
+
+async function playAll(){
   stopPlay();
-  playing = true;
-  for (; currentRow < rows.length && playing; currentRow++) {
-    while (paused) await wait(200);
-    await playRow(currentRow);
+  playing=true;
+  for(;current<rows.length && playing;current++){
+    while(paused) await wait(200);
+    await playRow(current);
   }
 }
 
-function playFromRow() {
+function playFromRow(){
   stopPlay();
-  currentRow = Math.max(0, startRow.value - 1);
+  current=Math.max(0,startRow.value-1);
   playAll();
 }
 
-function pauseResume() {
-  paused = !paused;
-}
-
-function stopPlay() {
-  playing = false;
-  paused = false;
+function pauseResume(){paused=!paused;}
+function stopPlay(){
+  playing=false;paused=false;
   speechSynthesis.cancel();
-  clearInterval(timerInterval);
+  clearInterval(timerInt);
 }
 
-/* ===== SPELLING ===== */
-async function spellingRow(i) {
-  const w = rows[i][3];
-  if (!w) return;
-  await speak(w);
-  await wait(400);
-  for (let c of w) {
-    await speak(c);
-    await wait(400);
-  }
+async function spellRow(i){
+  let w=rows[i][3];
+  await speak(w); await wait(400);
+  for(let c of w){await speak(c); await wait(400);}
   await speak(w);
 }
 
-/* ===== UI ===== */
-function toggleBell() {
-  bellMuted = !bellMuted;
-  bellBtn.textContent = bellMuted ? "🔕 Bell OFF" : "🔔 Bell ON";
+function toggleBell(){
+  bellOn=!bellOn;
+  bellBtn.textContent=bellOn?"🔔":"🔕";
 }
 </script>
 
