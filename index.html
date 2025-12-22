@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Spelling Bee</title>
+<title>SPELLING BEE</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -208,7 +208,7 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 <div id="top">
   <div id="title">Spelling Bee</div>
   <div id="subtitle">
-    Aplikasi latihan <b>Writing, Speaking, dan Spelling</b> untuk Spelling Bee
+    Aplikasi ini membantu latihan Spelling Bee untuk writing dan speaking melalui pembacaan kata, kalimat, dan ejaan secara otomatis
   </div>
 
   <div id="topBtns">
@@ -219,10 +219,10 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 
   <div id="fileBox">
     <label class="fileBtn">
-      📂 FILE
+      📂 CHOOSE YOUR FILE
       <input type="file" accept=".csv" onchange="loadCSV(event)">
     </label>
-    <div class="helpBtn" onclick="openHelp()">?</div>
+    <div class="helpBtn" onclick="openHelp()">INSTRUCTION</div>
   </div>
 </div>
 
@@ -243,9 +243,9 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 
 <!-- BOTTOM -->
 <div id="bottom">
-  START
+  START FROM ROW : 
   <input type="number" id="startRow" value="1" min="1">
-  <button class="btn play" onclick="playFromRow()">▶</button>
+  <button class="btn play" onclick="playFromRow()">GO</button>
   <div id="timer">20</div>
 </div>
 
@@ -256,25 +256,17 @@ th:nth-child(4),td:nth-child(4){width:20%;}
   <div id="helpBox">
     <h3>📘 Cara Menggunakan</h3>
 
-    <div class="helpItem">
-      ▶ <b>Play All</b><br>
-      Gunakan untuk latihan <b>writing spelling bee</b>.
-      Dengarkan kata → kalimat → kata, lalu tulis.
-    </div>
+    <div class="help-item">▶ <b>Play All</b> – Membaca semua baris otomatis</div>
+    <div class="help-item">⏸ <b>Pause</b> – Menjeda suara & timer</div>
+    <div class="help-item">⏹ <b>Stop</b> – Hentikan dan reset</div>
+    <div class="help-item">🔊 <b>Speak</b> – Latihan speaking</div>
+    <div class="help-item">🔠 <b>Spell</b> – Latihan ejaan</div>
 
-    <div class="helpItem">
-      🔊 <b>Speak</b><br>
-      Gunakan untuk latihan <b>speaking</b>.
-      Ikuti cara pengucapan yang benar.
+    <div class="tips-box">
+      <b>TIPS :</b>
+      📝 <b>Play All</b> untuk latihan <b>Writing Spelling Bee</b><br>
+      🗣️ <b>Speak</b> untuk latihan <b>Speaking Spelling Bee</b>
     </div>
-
-    <div class="helpItem">
-      🔠 <b>Spell</b><br>
-      Dengarkan ejaan huruf satu per satu.
-      Cocok untuk menghafal spelling.
-    </div>
-
-    <button id="closeHelp" onclick="closeHelp()">OK, Mengerti</button>
   </div>
 </div>
 
@@ -448,3 +440,4 @@ function closeHelp(e){
 
 </body>
 </html>
+
