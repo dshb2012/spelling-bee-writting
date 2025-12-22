@@ -262,19 +262,23 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 <!-- POPUP -->
 <div id="helpOverlay" onclick="closeHelp(event)">
   <div id="helpBox">
-    <h3>📘 Cara Menggunakan</h3>
+    <h3>📘 CARA MENGGUNAKAN</h3>
 
     <div class="help-item">▶ <b>Play All</b> – Membaca semua baris otomatis</div>
     <div class="help-item">⏸ <b>Pause</b> – Menjeda suara & timer</div>
     <div class="help-item">⏹ <b>Stop</b> – Hentikan dan reset</div>
-    <div class="help-item">🔊 <b>Speak</b> – Latihan speaking</div>
-    <div class="help-item">🔠 <b>Spell</b> – Latihan ejaan</div>
+    <div class="help-item">🔊 <b>Speak</b> – Membacakan Kata dan Kalimat Pada Baris Terpilih</div>
+    <div class="help-item">🔠 <b>Spell</b> – Mengeja Kata Pada Baris Terpilih</div>
 
+    
     <div class="tips-box">
       <b>TIPS :</b>
+      
       📝 <b>Play All</b> untuk latihan <b>Writing Spelling Bee</b><br>
       🗣️ <b>Speak</b> untuk latihan <b>Speaking Spelling Bee</b>
     </div>
+
+    <button id="closeHelp" onclick="closeHelp()">OK, Mengerti</button>
   </div>
 </div>
 
@@ -448,6 +452,7 @@ function closeHelp(e){
 
 </body>
 </html>
+
 
 
 
