@@ -15,7 +15,6 @@ html,body{
 }
 :root{
   --bg:#eef6f1;
-  --card:#ffffff;
   --primary:#5fb3a2;
   --warn:#ffd166;
   --danger:#ef476f;
@@ -48,13 +47,11 @@ html,body{
   border:none;
   border-radius:16px;
   font-weight:700;
-  font-size:14px;
 }
 .play{background:var(--primary);color:#fff;}
 .pause{background:var(--warn);}
 .stop{background:var(--danger);color:#fff;}
 
-/* FILE BUTTON (PROPORSIONAL) */
 #fileBox{
   margin-top:8px;
   text-align:center;
@@ -62,15 +59,13 @@ html,body{
 .fileBtn{
   display:inline-flex;
   align-items:center;
-  justify-content:center;
-  height:40px;
-  padding:0 16px;
+  height:38px;
+  padding:0 14px;
   border-radius:14px;
   background:var(--blue);
   color:#fff;
   font-weight:700;
   font-size:13px;
-  cursor:pointer;
 }
 .fileBtn input{display:none;}
 
@@ -78,30 +73,29 @@ html,body{
 .wrapper{
   padding-top:200px;
   padding-bottom:130px;
-  overflow-x:auto;
 }
 table{
   width:100%;
   border-collapse:collapse;
-  table-layout:auto; /* 🔑 PENTING */
+  table-layout:fixed; /* 🔑 1 layar */
 }
 th,td{
-  padding:10px 12px;
-  background:#fff;
+  padding:10px;
   border-bottom:1px solid #ddd;
+  background:#fff;
   vertical-align:top;
-  white-space:normal;
-  word-break:break-word;
-  line-height:1.5;
   font-size:14px;
+  line-height:1.5;
+  word-break:normal;
+  overflow-wrap:break-word;
 }
 
-/* Lebar kolom cerdas */
-th:nth-child(1), td:nth-child(1){min-width:48px;}
-th:nth-child(2), td:nth-child(2){min-width:110px;}
-th:nth-child(3), td:nth-child(3){min-width:220px;}
-th:nth-child(4), td:nth-child(4){min-width:110px;}
-th:nth-child(5), td:nth-child(5){min-width:90px;}
+/* Proporsi kolom (total = 100%) */
+th:nth-child(1),td:nth-child(1){width:8%;}
+th:nth-child(2),td:nth-child(2){width:20%;}
+th:nth-child(3),td:nth-child(3){width:32%;}
+th:nth-child(4),td:nth-child(4){width:20%;}
+th:nth-child(5),td:nth-child(5){width:20%;}
 
 tr.active td{background:#fff3bf;}
 
@@ -109,7 +103,7 @@ tr.active td{background:#fff3bf;}
   background:var(--blue);
   color:#fff;
   border:none;
-  padding:6px 12px;
+  padding:6px 10px;
   border-radius:12px;
   font-weight:600;
   font-size:13px;
@@ -129,7 +123,7 @@ tr.active td{background:#fff3bf;}
 }
 #startRow{
   width:64px;
-  height:38px;
+  height:36px;
   border-radius:12px;
   border:none;
   text-align:center;
@@ -182,9 +176,17 @@ tr.active td{background:#fff3bf;}
 <script>
 let headers=[], rows=[];
 let current=0, playing=false, paused=false;
-let bellOn=true, timerInt;
+let bellOn=true;
+let timerInterval=null;
 const audioCtx=new (window.AudioContext||webkitAudioContext)();
 
+/* ===== UTILS ===== */
+function clearTimer(){
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval=null;
+  }
+}
 async function wait(ms){
   let t=0;
   while(t<ms){
@@ -209,6 +211,7 @@ function beep(freq){
   g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.2);
 }
 
+/* ===== CSV ===== */
 function loadCSV(e){
   const r=new FileReader();
   r.onload=()=>{
@@ -220,6 +223,7 @@ function loadCSV(e){
   r.readAsText(e.target.files[0]);
 }
 
+/* ===== RENDER ===== */
 function render(){
   thead.innerHTML="<tr>"+headers.map(h=>`<th>${h}</th>`).join("")+"<th>Spelling</th></tr>";
   tbody.innerHTML="";
@@ -241,12 +245,33 @@ function render(){
   });
 }
 
+/* ===== SCROLL ===== */
 function focusRow(i){
-  document.querySelectorAll("tr").forEach(r=>r.classList.remove("active"));
+  [...tbody.children].forEach(r=>r.classList.remove("active"));
   tbody.children[i].classList.add("active");
   tbody.children[i].scrollIntoView({behavior:"smooth",block:"center"});
 }
 
+/* ===== TIMER ===== */
+function timer20(){
+  return new Promise(res=>{
+    clearTimer();
+    let t=20;
+    timer.textContent=t;
+    timerInterval=setInterval(()=>{
+      if(paused)return;
+      t--;
+      timer.textContent=t;
+      if(bellOn)beep(300+(20-t)*25);
+      if(t<=0){
+        clearTimer();
+        res();
+      }
+    },1000);
+  });
+}
+
+/* ===== PLAY ===== */
 async function playRow(i){
   focusRow(i);
   await speak(rows[i][1]);
@@ -255,23 +280,6 @@ async function playRow(i){
   await wait(500);
   await speak(rows[i][3]);
   await timer20();
-}
-
-function timer20(){
-  return new Promise(res=>{
-    let t=20;
-    timer.textContent=t;
-    timerInt=setInterval(()=>{
-      if(paused)return;
-      t--;
-      timer.textContent=t;
-      if(bellOn)beep(300+(20-t)*25);
-      if(t<=0){
-        clearInterval(timerInt);
-        res();
-      }
-    },1000);
-  });
 }
 
 async function playAll(){
@@ -292,6 +300,8 @@ async function playFromRow(){
     await playRow(current);
   }
 }
+
+/* ===== SPELL ===== */
 async function spell(i){
   const w=rows[i][3];
   await speak(w);
@@ -303,17 +313,18 @@ async function spell(i){
   await speak(w);
 }
 
+/* ===== CONTROLS ===== */
 function pauseResume(){
   paused=!paused;
-  if(paused)speechSynthesis.pause();
-  else speechSynthesis.resume();
+  paused?speechSynthesis.pause():speechSynthesis.resume();
   pauseBtn.textContent=paused?"▶ Resume":"⏸ Pause";
 }
 function stopAll(){
   playing=false;
   paused=false;
   speechSynthesis.cancel();
-  clearInterval(timerInt);
+  clearTimer();
+  timer.textContent="20";
   pauseBtn.textContent="⏸ Pause";
 }
 function toggleBell(){
