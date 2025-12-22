@@ -7,8 +7,7 @@
 
 <style>
 html,body{
-  margin:0;
-  padding:0;
+  margin:0;padding:0;
   width:100%;
   overflow-x:hidden;
   font-family:system-ui,-apple-system,sans-serif;
@@ -22,7 +21,7 @@ html,body{
 }
 .app{background:var(--bg);}
 
-/* ===== TOP ===== */
+/* ===== TOP STICKY ===== */
 #top{
   position:fixed;
   top:0;left:0;right:0;
@@ -59,7 +58,7 @@ html,body{
 .fileBtn{
   display:inline-flex;
   align-items:center;
-  height:36px;
+  height:34px;
   padding:0 14px;
   border-radius:14px;
   background:var(--blue);
@@ -71,8 +70,8 @@ html,body{
 
 /* ===== TABLE ===== */
 .wrapper{
-  padding-top:200px;
-  padding-bottom:130px;
+  padding-top:190px;
+  padding-bottom:120px;
 }
 table{
   width:100%;
@@ -86,30 +85,23 @@ th,td{
   vertical-align:top;
 }
 
-/* ==== KOLOM WORD (TIDAK BOLEH TERPOTONG) ==== */
-td.word, th.word{
-  font-size:13px;              /* diperkecil */
-  white-space:nowrap;          /* 1 baris */
-  word-break:keep-all;         /* JANGAN POTONG */
-  overflow:hidden;
-  text-overflow:ellipsis;      /* aman kalau terlalu panjang */
+/* Word */
+.word{
+  font-size:16px;
+  font-weight:700;
+  white-space:nowrap;
+  word-break:keep-all;
+  text-align:left;
 }
 
-/* ==== KOLOM SENTENCE ==== */
-td.sentence, th.sentence{
+/* Sentence */
+.sentence{
   font-size:14px;
+  line-height:1.5;
   white-space:normal;
   word-break:normal;
-  overflow-wrap:break-word;    /* turun setelah kata */
-  line-height:1.5;
+  overflow-wrap:break-word;
 }
-
-/* ==== LEBAR PROPORSI ==== */
-th:nth-child(1),td:nth-child(1){width:8%;}
-th:nth-child(2),td:nth-child(2){width:22%;}
-th:nth-child(3),td:nth-child(3){width:28%;}
-th:nth-child(4),td:nth-child(4){width:22%;}
-th:nth-child(5),td:nth-child(5){width:20%;}
 
 tr.active td{background:#fff3bf;}
 
@@ -117,13 +109,19 @@ tr.active td{background:#fff3bf;}
   background:var(--blue);
   color:#fff;
   border:none;
-  padding:6px 10px;
+  padding:6px 12px;
   border-radius:12px;
-  font-weight:600;
+  font-weight:700;
   font-size:13px;
 }
 
-/* ===== BOTTOM ===== */
+/* Column widths */
+th:nth-child(1),td:nth-child(1){width:10%;}
+th:nth-child(2),td:nth-child(2){width:30%;}
+th:nth-child(3),td:nth-child(3){width:40%;}
+th:nth-child(4),td:nth-child(4){width:20%;}
+
+/* ===== BOTTOM STICKY ===== */
 #bottom{
   position:fixed;
   bottom:0;left:0;right:0;
@@ -155,6 +153,7 @@ tr.active td{background:#fff3bf;}
 <body>
 <div class="app">
 
+<!-- TOP -->
 <div id="top">
   <div id="title">Spelling Bee – Writing Practice</div>
   <div id="topBtns">
@@ -170,13 +169,22 @@ tr.active td{background:#fff3bf;}
   </div>
 </div>
 
+<!-- TABLE -->
 <div class="wrapper">
   <table>
-    <thead id="thead"></thead>
+    <thead>
+      <tr>
+        <th>No.</th>
+        <th>Word</th>
+        <th>Sentence</th>
+        <th>Spelling</th>
+      </tr>
+    </thead>
     <tbody id="tbody"></tbody>
   </table>
 </div>
 
+<!-- BOTTOM -->
 <div id="bottom">
   Start Row
   <input type="number" id="startRow" value="1" min="1">
@@ -188,7 +196,7 @@ tr.active td{background:#fff3bf;}
 </div>
 
 <script>
-let headers=[], rows=[];
+let rows=[];
 let current=0, playing=false, paused=false;
 let bellOn=true, timerInterval=null;
 const audioCtx=new (window.AudioContext||webkitAudioContext)();
@@ -224,7 +232,7 @@ function loadCSV(e){
   const r=new FileReader();
   r.onload=()=>{
     const lines=r.result.trim().split("\n").map(l=>l.split(","));
-    headers=lines.shift();
+    lines.shift(); // skip header
     rows=lines;
     render();
   };
@@ -232,12 +240,6 @@ function loadCSV(e){
 }
 
 function render(){
-  thead.innerHTML="<tr>"+
-    "<th>No</th>"+
-    "<th class='word'>Word</th>"+
-    "<th class='sentence'>Sentence</th>"+
-    "<th class='word'>Word</th>"+
-    "<th>Spelling</th></tr>";
   tbody.innerHTML="";
   rows.forEach((r,i)=>{
     const tr=document.createElement("tr");
@@ -245,7 +247,6 @@ function render(){
       <td>${r[0]}</td>
       <td class="word">${r[1]}</td>
       <td class="sentence">${r[2]}</td>
-      <td class="word">${r[3]}</td>
       <td><button class="spellBtn" onclick="spell(${i})">Spell</button></td>
     `;
     tbody.appendChild(tr);
@@ -275,11 +276,14 @@ function timer20(){
 
 async function playRow(i){
   focusRow(i);
-  await speak(rows[i][1]);
+  const word=rows[i][1];
+  const sentence=rows[i][2];
+
+  await speak(word);
   await wait(500);
-  await speak(rows[i][2]);
+  await speak(sentence);
   await wait(500);
-  await speak(rows[i][3]);
+  await speak(word);
   await timer20();
 }
 
@@ -303,7 +307,7 @@ async function playFromRow(){
 }
 
 async function spell(i){
-  const w=rows[i][3];
+  const w=rows[i][1];
   await speak(w);
   await wait(400);
   for(const c of w){
