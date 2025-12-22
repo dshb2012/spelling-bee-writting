@@ -1,163 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Spelling Bee</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Spelling Bee</title>
+
 <style>
-html,body{
-  margin:0;padding:0;
-  width:100%;
-  overflow-x:hidden;
-  font-family:system-ui,-apple-system,sans-serif;
+/* ===== GLOBAL ===== */
+body {
+  margin: 0;
+  font-family: system-ui, Arial, sans-serif;
+  background: #f8fafc;
 }
-:root{
-  --bg:#eef6f1;
-  --primary:#5fb3a2;
-  --warn:#ffd166;
-  --danger:#ef476f;
-  --blue:#6c8cff;
-}
-.app{background:var(--bg);}
 
-/* ===== TOP ===== */
-#top{
-  position:fixed;
-  top:0;left:0;right:0;
-  background:var(--bg);
-  padding:12px;
-  z-index:1000;
-  box-shadow:0 4px 10px rgba(0,0,0,.15);
+/* ===== TOP STICKY ===== */
+.top-sticky {
+  position: sticky;
+  top: 0;
+  background: #1e3a8a;
+  color: white;
+  padding: 10px;
+  z-index: 1000;
 }
-#title{
-  text-align:center;
-  font-size:20px;
-  font-weight:800;
-  margin-bottom:8px;
-}
-#topBtns{
-  display:flex;
-  gap:8px;
-}
-.btn{
-  flex:1;
-  height:44px;
-  border:none;
-  border-radius:16px;
-  font-weight:800;
-}
-.play{background:var(--primary);color:#fff;}
-.pause{background:var(--warn);}
-.stop{background:var(--danger);color:#fff;}
 
-#fileBox{
-  margin-top:8px;
-  text-align:center;
+.top-sticky h1 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  text-align: center;
 }
-.fileBtn{
-  display:inline-flex;
-  align-items:center;
-  height:34px;
-  padding:0 14px;
-  border-radius:14px;
-  background:var(--blue);
-  color:#fff;
-  font-weight:700;
-  font-size:13px;
+
+.top-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
 }
-.fileBtn input{display:none;}
+
+.top-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  color: white;
+  background: #2563eb;
+}
 
 /* ===== TABLE ===== */
-.wrapper{
-  padding-top:190px;
-  padding-bottom:120px;
-}
-table{
-  width:100%;
-  border-collapse:collapse;
-  table-layout:fixed;
-}
-th,td{
-  padding:10px;
-  border-bottom:1px solid #ddd;
-  background:#fff;
-  vertical-align:top;
-}
-tr.active td{background:#fff3bf;}
-
-.word{
-  font-size:16px;
-  font-weight:800;
-  white-space:nowrap;
-}
-.sentence{
-  font-size:14px;
-  line-height:1.5;
-  overflow-wrap:break-word;
-}
-.spellBtn{
-  background:var(--blue);
-  color:#fff;
-  border:none;
-  padding:6px 10px;
-  border-radius:12px;
-  font-weight:700;
-  font-size:13px;
-  margin:2px;
-  width:70px;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* Column width */
-th:nth-child(1),td:nth-child(1){width:10%;}
-th:nth-child(2),td:nth-child(2){width:30%;}
-th:nth-child(3),td:nth-child(3){width:40%;}
-th:nth-child(4),td:nth-child(4){width:20%;}
+td {
+  padding: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
 
-/* ===== BOTTOM ===== */
-#bottom{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  background:var(--bg);
-  padding:12px;
-  display:flex;
-  gap:8px;
-  align-items:center;
-  z-index:1000;
-  box-shadow:0 -6px 12px rgba(0,0,0,.15);
+tr.active {
+  background: #dbeafe;
 }
-#startRow{
-  width:60px;
-  height:36px;
-  border-radius:12px;
-  border:none;
-  text-align:center;
+
+/* ===== BOTTOM STICKY ===== */
+.bottom-sticky {
+  position: sticky;
+  bottom: 0;
+  background: #e0f2fe;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 1000;
 }
-#timer{
-  margin-left:auto;
-  background:#fff;
-  padding:10px 16px;
-  border-radius:14px;
-  font-weight:800;
+
+.bottom-sticky input {
+  width: 70px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #94a3b8;
 }
-/* Help Button */
+
+.timer-box {
+  margin-left: auto;
+  background: #1e40af;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* ===== HELP BUTTON ===== */
 .help-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  background: #6366f1;
   color: white;
   font-size: 18px;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-.help-btn:active {
-  transform: scale(0.95);
-}
-
-/* Modal Background */
+/* ===== MODAL ===== */
 .modal {
   display: none;
   position: fixed;
@@ -166,403 +109,108 @@ th:nth-child(4),td:nth-child(4){width:20%;}
   z-index: 9999;
 }
 
-/* Modal Content */
 .modal-content {
-  background: #ffffff;
-  margin: auto;
-  margin-top: 8vh;
+  background: white;
   width: 90%;
-  max-width: 520px;
-  border-radius: 16px;
+  max-width: 480px;
+  margin: 10vh auto;
   padding: 20px;
-  font-family: system-ui, Arial, sans-serif;
-  max-height: 85vh;
-  overflow-y: auto;
-  position: relative;
+  border-radius: 16px;
+  animation: fadeZoom 0.3s ease;
 }
 
-/* Animation */
-.animate {
-  animation: zoomFade 0.3s ease;
-}
-
-@keyframes zoomFade {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+@keyframes fadeZoom {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 .close-btn {
-  position: absolute;
-  top: 12px;
-  right: 15px;
-  font-size: 20px;
+  float: right;
+  font-size: 18px;
   cursor: pointer;
 }
 
-.modal-content h2 {
-  text-align: center;
-  margin-top: 0;
-}
-
-/* Help Items */
 .help-item {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
-.help-item .icon {
-  font-size: 22px;
-  width: 30px;
-}
-
-.help-item p {
-  margin: 4px 0 0;
-  font-size: 14px;
-  line-height: 1.4;
-}
-
-/* Tips Box */
 .tips-box {
-  margin-top: 16px;
-  padding: 12px;
   background: #f0f9ff;
+  padding: 10px;
   border-left: 5px solid #0ea5e9;
-  border-radius: 10px;
+  border-radius: 8px;
 }
-
-.tips-box h3 {
-  margin-top: 0;
-}  
- 
 </style>
+</head>
 
-<!-- Help Button -->
-<button id="helpBtn" class="help-btn" title="Petunjuk">❓</button>
+<body>
 
-<!-- Help Modal -->
+<!-- ===== TOP ===== -->
+<div class="top-sticky">
+  <h1>Spelling Bee - Writing Practice</h1>
+  <div class="top-buttons">
+    <button>▶ Play All</button>
+    <button>⏸ Pause</button>
+    <button>⏹ Stop</button>
+  </div>
+</div>
+
+<!-- ===== TABLE ===== -->
+<table id="wordTable">
+  <tr><td>1</td><td>apple</td><td>I eat an apple</td></tr>
+  <tr><td>2</td><td>banana</td><td>I like banana</td></tr>
+</table>
+
+<!-- ===== BOTTOM ===== -->
+<div class="bottom-sticky">
+  <label>Start Row</label>
+  <input type="number" min="1" value="1">
+
+  <!-- HELP BUTTON SEJAJAR DI SINI -->
+  <button id="helpBtn" class="help-btn">❓</button>
+
+  <div class="timer-box" id="timer">20</div>
+</div>
+
+<!-- ===== HELP POPUP ===== -->
 <div id="helpModal" class="modal">
-  <div class="modal-content animate">
+  <div class="modal-content">
     <span class="close-btn" id="closeHelp">✕</span>
 
     <h2>📘 Cara Menggunakan</h2>
 
-    <div class="help-item">
-      <span class="icon">📂</span>
-      <div>
-        <b>Choose File</b>
-        <p>Pilih file CSV berisi daftar Word dan Sentence.</p>
-      </div>
-    </div>
-
-    <div class="help-item">
-      <span class="icon">▶</span>
-      <div>
-        <b>Play All</b>
-        <p>Membaca semua baris otomatis:<br>
-        <i>Word → Sentence → Word → Timer 20 detik</i></p>
-      </div>
-    </div>
-
-    <div class="help-item">
-      <span class="icon">⏸</span>
-      <div>
-        <b>Pause / Resume</b>
-        <p>Menjeda dan melanjutkan suara atau timer.</p>
-      </div>
-    </div>
-
-    <div class="help-item">
-      <span class="icon">⏹</span>
-      <div>
-        <b>Stop</b>
-        <p>Menghentikan semua proses dan reset.</p>
-      </div>
-    </div>
-
-    <div class="help-item">
-      <span class="icon">🔢</span>
-      <div>
-        <b>Start Row</b>
-        <p>Mulai membaca dari baris tertentu.</p>
-      </div>
-    </div>
-
-    <div class="help-item">
-      <span class="icon">🔊</span>
-      <div>
-        <b>Speak</b>
-        <p>Membaca satu baris untuk latihan berbicara.</p>
-      </div>
-    </div>
-
-    <div class="help-item">
-      <span class="icon">🔠</span>
-      <div>
-        <b>Spell</b>
-        <p>Membacakan ejaan kata (huruf per huruf).</p>
-      </div>
-    </div>
+    <div class="help-item">▶ <b>Play All</b> – Membaca semua baris otomatis</div>
+    <div class="help-item">⏸ <b>Pause</b> – Menjeda suara & timer</div>
+    <div class="help-item">⏹ <b>Stop</b> – Hentikan dan reset</div>
+    <div class="help-item">🔊 <b>Speak</b> – Latihan speaking</div>
+    <div class="help-item">🔠 <b>Spell</b> – Latihan ejaan</div>
 
     <div class="tips-box">
-      <h3>✨ Tips Belajar</h3>
-      <p>📝 <b>Play All</b> → Latihan <b>Writing Spelling Bee</b></p>
-      <p>🗣️ <b>Speak</b> → Latihan <b>Speaking Spelling Bee</b></p>
+      📝 <b>Play All</b> untuk latihan <b>Writing Spelling Bee</b><br>
+      🗣️ <b>Speak</b> untuk latihan <b>Speaking Spelling Bee</b>
     </div>
-
   </div>
-</div>
-
-</head>
-
-<body>
-<div class="app">
-
-<!-- TOP -->
-<div id="top">
-  <div class="title" id="title">Spelling Bee</div>
-  <div id="topBtns">
-    <button class="btn play" onclick="playAll()">▶ PLAY ALL</button>
-    <button class="btn pause" id="pauseBtn" onclick="pauseResume()">⏸ PAUSE</button>
-    <button class="btn stop" onclick="stopAll()">⏹ STOP</button>
-  </div>
-  <div id="fileBox">
-    <label class="fileBtn">
-      📂 CHOOSE FILE
-      <input type="file" accept=".csv" onchange="loadCSV(event)">
-    </label>
-  </div>
-</div>
-
-<!-- TABLE -->
-<div class="wrapper">
-<table>
-<thead>
-<tr>
-  <th>No.</th>
-  <th>Word</th>
-  <th>Sentence</th>
-  <th>Action</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
-</div>
-
-<!-- BOTTOM -->
-<div id="bottom">
-  START ROW
-  <input type="number" id="startRow" value="1" min="1">
-  <button class="btn play" onclick="playFromRow()">▶</button>
-  <button class="btn pause" id="bellBtn" onclick="toggleBell()">🔔</button>
-  <div id="timer">20</div>
-</div>
-
 </div>
 
 <script>
-let rows=[], current=0, playing=false, paused=false;
-let bellOn=true, timerInterval=null;
-const audioCtx=new (window.AudioContext||webkitAudioContext)();
+/* HELP POPUP */
+const helpBtn = document.getElementById("helpBtn");
+const helpModal = document.getElementById("helpModal");
+const closeHelp = document.getElementById("closeHelp");
 
-/* ===== UTIL ===== */
-function clearTimer(){ if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
-async function wait(ms){
-  let t=0;
-  while(t<ms){
-    if(!paused)t+=100;
-    await new Promise(r=>setTimeout(r,100));
-  }
-}
-function speak(text){
-  return new Promise(res=>{
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang="en-US";
-    u.onend=res;
-    speechSynthesis.speak(u);
-  });
-}
+helpBtn.onclick = () => {
+  helpModal.style.display = "block";
+  navigator.vibrate?.(50);
+};
 
-/* ===== TIMER SOUND ===== */
-function tick(){
-  if(!bellOn) return;
-  const o=audioCtx.createOscillator();
-  const g=audioCtx.createGain();
-  o.type="triangle";
-  o.frequency.value=700;
-  g.gain.value=0.025;
-  o.connect(g); g.connect(audioCtx.destination);
-  o.start();
-  o.stop(audioCtx.currentTime+0.07);
-}
-function endBell(){
-  if(!bellOn) return;
-  const o=audioCtx.createOscillator();
-  const g=audioCtx.createGain();
-  o.type="sine";
-  o.frequency.setValueAtTime(880,audioCtx.currentTime);
-  o.frequency.exponentialRampToValueAtTime(440,audioCtx.currentTime+0.8);
-  g.gain.setValueAtTime(0.18,audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+0.9);
-  o.connect(g); g.connect(audioCtx.destination);
-  o.start();
-  o.stop(audioCtx.currentTime+0.9);
-}
+closeHelp.onclick = () => {
+  helpModal.style.display = "none";
+};
 
-/* ===== CSV ===== */
-function loadCSV(e){
-  const r=new FileReader();
-  r.onload=()=>{
-    const lines=r.result.trim().split("\n").map(l=>l.split(","));
-    lines.shift();
-    rows=lines;
-    render();
-  };
-  r.readAsText(e.target.files[0]);
-}
-
-/* ===== TABLE ===== */
-function render(){
-  tbody.innerHTML="";
-  rows.forEach((r,i)=>{
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td>${r[0]}</td>
-      <td class="word">${r[1]}</td>
-      <td class="sentence">${r[2]}</td>
-      <td>
-        <button class="spellBtn" onclick="speakRow(${i})">🔊 Speak</button>
-        <button class="spellBtn" onclick="spell(${i})">🔠 Spell</button>
-      </td>`;
-    tbody.appendChild(tr);
-  });
-}
-function focusRow(i){
-  [...tbody.children].forEach(r=>r.classList.remove("active"));
-  tbody.children[i].classList.add("active");
-  tbody.children[i].scrollIntoView({behavior:"smooth",block:"center"});
-}
-
-/* ===== TIMER ===== */
-function timer20(){
-  return new Promise(res=>{
-    clearTimer();
-    let t=20;
-    timer.textContent=t;
-    tick(); // bunyi tepat saat 20 muncul
-    timerInterval=setInterval(()=>{
-      if(paused) return;
-      t--;
-      timer.textContent=t;
-      if(t>0) tick();
-      if(t===0){
-        clearTimer();
-        endBell();
-        setTimeout(res,1000);
-      }
-    },1000);
-  });
-}
-
-/* ===== PLAY ===== */
-async function playRow(i){
-  focusRow(i);
-  const w=rows[i][1], s=rows[i][2];
-  await speak(w);
-  await wait(500);
-  await speak(s);
-  await wait(500);
-  await speak(w);
-  await timer20();
-}
-async function playAll(){
-  stopAll();
-  current=0; playing=true;
-  for(;current<rows.length && playing;current++){
-    while(paused) await wait(200);
-    await playRow(current);
-  }
-}
-async function playFromRow(){
-  stopAll();
-  current=Math.max(0,startRow.value-1);
-  playing=true;
-  for(;current<rows.length && playing;current++){
-    while(paused) await wait(200);
-    await playRow(current);
-  }
-}
-
-/* ===== MANUAL ===== */
-async function speakRow(i){
-  stopAll();
-  focusRow(i);
-  const w=rows[i][1], s=rows[i][2];
-  await speak(w);
-  await wait(500);
-  await speak(s);
-  await wait(500);
-  await speak(w);
-}
-async function spell(i){
-  stopAll();
-  focusRow(i);
-  const w=rows[i][1];
-  await speak(w);
-  await wait(400);
-  for(const c of w){
-    await speak(c);
-    await wait(400);
-  }
-  await speak(w);
-}
-
-/* ===== CONTROL ===== */
-function pauseResume(){
-  paused=!paused;
-  paused?speechSynthesis.pause():speechSynthesis.resume();
-  pauseBtn.textContent=paused?"▶ RESUME":"⏸ PAUSE";
-}
-function stopAll(){
-  playing=false; paused=false;
-  speechSynthesis.cancel();
-  clearTimer();
-  timer.textContent="20";
-  pauseBtn.textContent="⏸ PAUSE";
-}
-function toggleBell(){
-  bellOn=!bellOn;
-  bellBtn.textContent=bellOn?"🔔":"🔕";
-}
+window.onclick = e => {
+  if (e.target === helpModal) helpModal.style.display = "none";
+};
 </script>
-  
-<script>
-  const helpBtn = document.getElementById("helpBtn");
-  const helpModal = document.getElementById("helpModal");
-  const closeHelp = document.getElementById("closeHelp");
 
-  helpBtn.addEventListener("click", () => {
-    helpModal.style.display = "block";
-    navigator.vibrate?.(60);
-  });
-
-  closeHelp.addEventListener("click", () => {
-    helpModal.style.display = "none";
-  });
-
-  window.addEventListener("click", (e) => {
-    if (e.target === helpModal) {
-      helpModal.style.display = "none";
-    }
-  });
-</script>
-  
 </body>
 </html>
-
