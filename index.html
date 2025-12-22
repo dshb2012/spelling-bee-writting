@@ -1,256 +1,449 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Spelling Bee</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Spelling Bee - Writing Practice</title>
 
 <style>
-/* ===== GLOBAL ===== */
-body {
-  margin: 0;
-  font-family: system-ui, Arial, sans-serif;
-  background: #f8fafc;
+html,body{
+  margin:0;padding:0;
+  width:100%;
+  overflow-x:hidden;
+  font-family:system-ui,-apple-system,sans-serif;
 }
+:root{
+  --bg:#eef6f1;
+  --primary:#5fb3a2;
+  --warn:#ffd166;
+  --danger:#ef476f;
+  --blue:#6c8cff;
+}
+.app{background:var(--bg);}
 
-/* ===== TOP STICKY ===== */
-.top-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: linear-gradient(135deg, #1e3a8a, #1e40af);
-  color: white;
-  padding: 14px 12px;
+/* ===== TOP ===== */
+#top{
+  position:fixed;
+  top:0;left:0;right:0;
+  background:var(--bg);
+  padding:14px;
+  z-index:1000;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
 }
+#title{
+  text-align:center;
+  font-size:22px;
+  font-weight:900;
+}
+#subtitle{
+  text-align:center;
+  font-size:13px;
+  opacity:.8;
+  margin-bottom:10px;
+}
+#topBtns{
+  display:flex;
+  gap:8px;
+}
+.btn{
+  flex:1;
+  height:44px;
+  border:none;
+  border-radius:16px;
+  font-weight:800;
+}
+.play{background:var(--primary);color:#fff;}
+.pause{background:var(--warn);}
+.stop{background:var(--danger);color:#fff;}
 
-.top-title {
-  text-align: center;
+#fileBox{
+  margin-top:8px;
+  display:flex;
+  justify-content:center;
+  gap:6px;
 }
-
-.top-title h1 {
-  margin: 0;
-  font-size: 22px;
+.fileBtn,.helpBtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:34px;
+  padding:0 14px;
+  border-radius:14px;
+  background:var(--blue);
+  color:#fff;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
 }
-
-.top-title p {
-  margin: 6px 0 12px;
-  font-size: 13px;
-  opacity: 0.95;
+.helpBtn{
+  width:34px;
+  padding:0;
+  font-size:16px;
 }
-
-/* ===== TOP BUTTONS ===== */
-.top-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.top-buttons button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 12px;
-  font-size: 14px;
-  color: white;
-  background: #2563eb;
-}
-
-.top-buttons button:active {
-  transform: scale(0.97);
-}
-
-/* ===== FILE BAR ===== */
-.file-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.file-bar input[type="file"] {
-  flex: 1;
-  font-size: 12px;
-}
-
-/* ===== HELP BUTTON ===== */
-.help-btn {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: #6366f1;
-  color: white;
-  font-size: 18px;
-  cursor: pointer;
-}
+.fileBtn input{display:none;}
 
 /* ===== TABLE ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
+.wrapper{
+  padding-top:220px;
+  padding-bottom:120px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+th,td{
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  background:#fff;
+  vertical-align:top;
+}
+tr.active td{background:#fff3bf;}
+
+.word{
+  font-size:16px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.sentence{
+  font-size:14px;
+  line-height:1.5;
+  overflow-wrap:break-word;
+}
+.spellBtn{
+  background:var(--blue);
+  color:#fff;
+  border:none;
+  padding:6px 10px;
+  border-radius:12px;
+  font-weight:700;
+  font-size:13px;
+  margin:2px;
+  width:70px;
 }
 
-td {
-  padding: 12px 10px;
-  border-bottom: 1px solid #e5e7eb;
-  vertical-align: top;
+/* Column width */
+th:nth-child(1),td:nth-child(1){width:10%;}
+th:nth-child(2),td:nth-child(2){width:30%;}
+th:nth-child(3),td:nth-child(3){width:40%;}
+th:nth-child(4),td:nth-child(4){width:20%;}
+
+/* ===== BOTTOM ===== */
+#bottom{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:var(--bg);
+  padding:12px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  z-index:1000;
+  box-shadow:0 -6px 12px rgba(0,0,0,.15);
+}
+#startRow{
+  width:60px;
+  height:36px;
+  border-radius:12px;
+  border:none;
+  text-align:center;
+}
+#timer{
+  margin-left:auto;
+  background:#fff;
+  padding:10px 16px;
+  border-radius:14px;
+  font-weight:800;
 }
 
-tr.active {
-  background: #dbeafe;
+/* ===== POPUP ===== */
+#helpOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
 }
-
-/* ===== BOTTOM STICKY ===== */
-.bottom-sticky {
-  position: sticky;
-  bottom: 0;
-  background: #e0f2fe;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 1000;
+#helpBox{
+  background:#fff;
+  width:90%;
+  max-width:380px;
+  border-radius:20px;
+  padding:20px;
+  animation:pop .25s ease;
 }
-
-.bottom-sticky label {
-  font-size: 13px;
+@keyframes pop{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
 }
-
-.bottom-sticky input {
-  width: 70px;
-  padding: 6px;
-  border-radius: 8px;
-  border: 1px solid #94a3b8;
+#helpBox h3{
+  margin:0 0 8px;
+  text-align:center;
 }
-
-.timer-box {
-  margin-left: auto;
-  background: #1e40af;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 12px;
-  font-weight: bold;
+.helpItem{
+  background:#f4f6f8;
+  border-radius:14px;
+  padding:10px;
+  margin-bottom:8px;
+  font-size:14px;
 }
-
-/* ===== MODAL ===== */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-  z-index: 9999;
-}
-
-.modal-content {
-  background: white;
-  width: 90%;
-  max-width: 480px;
-  margin: 10vh auto;
-  padding: 20px;
-  border-radius: 16px;
-  animation: fadeZoom 0.3s ease;
-}
-
-@keyframes fadeZoom {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-.close-btn {
-  float: right;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.help-item {
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.tips-box {
-  background: #f0f9ff;
-  padding: 10px;
-  border-left: 5px solid #0ea5e9;
-  border-radius: 8px;
-  font-size: 14px;
+#closeHelp{
+  margin-top:10px;
+  width:100%;
+  height:40px;
+  border:none;
+  border-radius:14px;
+  background:var(--primary);
+  color:#fff;
+  font-weight:800;
 }
 </style>
 </head>
 
 <body>
+<div class="app">
 
-<!-- ===== TOP ===== -->
-<div class="top-sticky">
-  <div class="top-title">
-    <h1>Spelling Bee - Writing Practice</h1>
-    <p>
-      Aplikasi ini membantu latihan Spelling Bee untuk
-      <b>writing</b> dan <b>speaking</b> melalui pembacaan kata,
-      kalimat, dan ejaan secara otomatis.
-    </p>
+<!-- TOP -->
+<div id="top">
+  <div id="title">Spelling Bee</div>
+  <div id="subtitle">
+    Aplikasi latihan <b>Writing, Speaking, dan Spelling</b> untuk Spelling Bee
   </div>
 
-  <div class="top-buttons">
-    <button id="playAll">▶ Play All</button>
-    <button id="pauseResume">⏸ Pause</button>
-    <button id="stop">⏹ Stop</button>
+  <div id="topBtns">
+    <button class="btn play" onclick="playAll()">▶ PLAY ALL</button>
+    <button class="btn pause" id="pauseBtn" onclick="pauseResume()">⏸ PAUSE</button>
+    <button class="btn stop" onclick="stopAll()">⏹ STOP</button>
   </div>
 
-  <div class="file-bar">
-    <input type="file" id="fileInput" accept=".csv">
-    <button id="helpBtn" class="help-btn">❓</button>
+  <div id="fileBox">
+    <label class="fileBtn">
+      📂 FILE
+      <input type="file" accept=".csv" onchange="loadCSV(event)">
+    </label>
+    <div class="helpBtn" onclick="openHelp()">?</div>
   </div>
 </div>
 
-<!-- ===== TABLE ===== -->
-<table id="wordTable">
-  <!-- Data dari CSV -->
+<!-- TABLE -->
+<div class="wrapper">
+<table>
+<thead>
+<tr>
+  <th>No.</th>
+  <th>Word</th>
+  <th>Sentence</th>
+  <th>Action</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
 </table>
-
-<!-- ===== BOTTOM ===== -->
-<div class="bottom-sticky">
-  <label>Start Row</label>
-  <input type="number" id="startRow" min="1" value="1">
-  <div class="timer-box" id="timer">20</div>
 </div>
 
-<!-- ===== HELP POPUP ===== -->
-<div id="helpModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" id="closeHelp">✕</span>
+<!-- BOTTOM -->
+<div id="bottom">
+  START
+  <input type="number" id="startRow" value="1" min="1">
+  <button class="btn play" onclick="playFromRow()">▶</button>
+  <div id="timer">20</div>
+</div>
 
-    <h2>📘 Cara Menggunakan</h2>
+</div>
 
-    <div class="help-item">▶ <b>Play All</b> – Membaca semua baris otomatis</div>
-    <div class="help-item">⏸ <b>Pause / Resume</b> – Menjeda dan melanjutkan</div>
-    <div class="help-item">⏹ <b>Stop</b> – Menghentikan dan reset</div>
-    <div class="help-item">🔊 <b>Speak</b> – Latihan speaking per baris</div>
-    <div class="help-item">🔠 <b>Spell</b> – Membaca ejaan kata</div>
+<!-- POPUP -->
+<div id="helpOverlay" onclick="closeHelp(event)">
+  <div id="helpBox">
+    <h3>📘 Cara Menggunakan</h3>
 
-    <div class="tips-box">
-      📝 <b>Play All</b> → Latihan <b>Writing Spelling Bee</b><br>
-      🗣️ <b>Speak</b> → Latihan <b>Speaking Spelling Bee</b>
+    <div class="helpItem">
+      ▶ <b>Play All</b><br>
+      Gunakan untuk latihan <b>writing spelling bee</b>.
+      Dengarkan kata → kalimat → kata, lalu tulis.
     </div>
+
+    <div class="helpItem">
+      🔊 <b>Speak</b><br>
+      Gunakan untuk latihan <b>speaking</b>.
+      Ikuti cara pengucapan yang benar.
+    </div>
+
+    <div class="helpItem">
+      🔠 <b>Spell</b><br>
+      Dengarkan ejaan huruf satu per satu.
+      Cocok untuk menghafal spelling.
+    </div>
+
+    <button id="closeHelp" onclick="closeHelp()">OK, Mengerti</button>
   </div>
 </div>
 
 <script>
-/* HELP POPUP */
-const helpBtn = document.getElementById("helpBtn");
-const helpModal = document.getElementById("helpModal");
-const closeHelp = document.getElementById("closeHelp");
+let rows=[], current=0, playing=false, paused=false;
+let timerInterval=null;
+const audioCtx=new (window.AudioContext||webkitAudioContext)();
 
-helpBtn.onclick = () => {
-  helpModal.style.display = "block";
-  navigator.vibrate?.(50);
-};
+function clearTimer(){ if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
+async function wait(ms){
+  let t=0;
+  while(t<ms){
+    if(!paused)t+=100;
+    await new Promise(r=>setTimeout(r,100));
+  }
+}
+function speak(text){
+  return new Promise(res=>{
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="en-US";
+    u.onend=res;
+    speechSynthesis.speak(u);
+  });
+}
 
-closeHelp.onclick = () => {
-  helpModal.style.display = "none";
-};
+/* TIMER SOUND */
+function tick(){
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.frequency.value=700;
+  g.gain.value=0.03;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  o.stop(audioCtx.currentTime+0.07);
+}
+function endBell(){
+  const o=audioCtx.createOscillator();
+  const g=audioCtx.createGain();
+  o.frequency.setValueAtTime(880,audioCtx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(440,audioCtx.currentTime+1);
+  g.gain.setValueAtTime(0.2,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+1);
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  o.stop(audioCtx.currentTime+1);
+}
 
-window.onclick = e => {
-  if (e.target === helpModal) helpModal.style.display = "none";
-};
+function timer20(){
+  return new Promise(res=>{
+    clearTimer();
+    let t=20;
+    timer.textContent=t;
+    tick();
+    timerInterval=setInterval(()=>{
+      if(paused) return;
+      t--;
+      timer.textContent=t;
+      if(t>0) tick();
+      if(t===0){
+        clearTimer();
+        endBell();
+        setTimeout(res,1000);
+      }
+    },1000);
+  });
+}
+
+/* CSV */
+function loadCSV(e){
+  const r=new FileReader();
+  r.onload=()=>{
+    const lines=r.result.trim().split("\n").map(l=>l.split(","));
+    lines.shift();
+    rows=lines;
+    render();
+  };
+  r.readAsText(e.target.files[0]);
+}
+
+function render(){
+  tbody.innerHTML="";
+  rows.forEach((r,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td>${r[0]}</td>
+      <td class="word">${r[1]}</td>
+      <td class="sentence">${r[2]}</td>
+      <td>
+        <button class="spellBtn" onclick="speakRow(${i})">🔊</button>
+        <button class="spellBtn" onclick="spell(${i})">🔠</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+function focusRow(i){
+  [...tbody.children].forEach(r=>r.classList.remove("active"));
+  tbody.children[i].classList.add("active");
+  tbody.children[i].scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+/* PLAY */
+async function playRow(i){
+  focusRow(i);
+  const w=rows[i][1], s=rows[i][2];
+  await speak(w); await wait(500);
+  await speak(s); await wait(500);
+  await speak(w);
+  await timer20();
+}
+async function playAll(){
+  stopAll();
+  current=0; playing=true;
+  for(;current<rows.length && playing;current++){
+    while(paused) await wait(200);
+    await playRow(current);
+  }
+}
+async function playFromRow(){
+  stopAll();
+  current=Math.max(0,startRow.value-1);
+  playing=true;
+  for(;current<rows.length && playing;current++){
+    while(paused) await wait(200);
+    await playRow(current);
+  }
+}
+async function speakRow(i){
+  stopAll();
+  focusRow(i);
+  const w=rows[i][1], s=rows[i][2];
+  await speak(w); await wait(500);
+  await speak(s); await wait(500);
+  await speak(w);
+}
+async function spell(i){
+  stopAll();
+  focusRow(i);
+  const w=rows[i][1];
+  await speak(w); await wait(400);
+  for(const c of w){
+    await speak(c);
+    await wait(400);
+  }
+  await speak(w);
+}
+
+/* CONTROL */
+function pauseResume(){
+  paused=!paused;
+  paused?speechSynthesis.pause():speechSynthesis.resume();
+  pauseBtn.textContent=paused?"▶ RESUME":"⏸ PAUSE";
+}
+function stopAll(){
+  playing=false; paused=false;
+  speechSynthesis.cancel();
+  clearTimer();
+  timer.textContent="20";
+  pauseBtn.textContent="⏸ PAUSE";
+}
+
+/* POPUP */
+function openHelp(){
+  helpOverlay.style.display="flex";
+}
+function closeHelp(e){
+  if(!e || e.target.id==="helpOverlay"){
+    helpOverlay.style.display="none";
+  }
+}
 </script>
 
 </body>
