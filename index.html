@@ -429,9 +429,8 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 <div id="bottom">
 
   <!-- 1. UPLOAD FILE -->
-  <label class="bottom-btn upload-btn">
-    📂 Upload File
-    <input type="file" accept=".csv" onchange="loadCSV(event)">
+  <label class="bottom-btn upload-btn" for="fileInput" id="bottomUpload">
+  📂 Upload File
   </label>
 
   <!-- 2. INSTRUCTION -->
@@ -694,6 +693,7 @@ document.addEventListener("click", function(e){
 <input type="file" id="fileInput" accept=".csv" style="display:none" onchange="loadCSV(event)">
 </body>
 </html>
+
 
 
 
