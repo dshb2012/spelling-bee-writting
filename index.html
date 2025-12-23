@@ -423,6 +423,8 @@ function loadCSV(e){
     lines.shift();
     rows=lines;
     render();
+    
+    document.getElementById("tableHead").style.display = "table-header-group";
   };
   r.readAsText(e.target.files[0]);
 }
@@ -521,6 +523,7 @@ function closeHelp(e){
 
 </body>
 </html>
+
 
 
 
