@@ -328,6 +328,28 @@ th:nth-child(4),td:nth-child(4){width:20%;}
     opacity:0;
   }
 }
+
+/* START MESSAGE */
+#startMessage{
+  margin-top:180px;
+  margin-bottom:20px;
+  text-align:center;
+  padding:20px;
+  background:#ffffff;
+  border-radius:20px;
+  box-shadow:0 6px 14px rgba(0,0,0,.12);
+  font-size:16px;
+  font-weight:800;
+  color:#333;
+}
+
+#startMessage span{
+  display:block;
+  margin-top:6px;
+  font-size:13px;
+  font-weight:600;
+  opacity:.6;
+}
   
 </style>
 </head>
@@ -364,11 +386,17 @@ th:nth-child(4),td:nth-child(4){width:20%;}
     <input type="number" id="startRow" value="1" min="1">
     <button onclick="playFromRow()">GO</button>
   </div>
-
+ </div>
 </div>
 
   
 <!-- TABLE -->
+<!-- START MESSAGE -->
+<div id="startMessage">
+  📂 <b>Upload a file</b> to start practice<br>
+  <span>Unggah dokumen untuk memulai latihan Spelling Bee</span>
+</div>
+  
 <div class="wrapper">
 <table>
 <thead id="tableHead">
@@ -520,6 +548,8 @@ function loadCSV(e){
     lines.shift();
     rows=lines;
     render();
+
+    document.getElementById("startMessage").style.display = "none";
     
     // TAMPILKAN TOMBOL ATAS SETELAH UPLOAD
     document.getElementById("topBtns").classList.remove("hiddenTop");
@@ -643,6 +673,7 @@ document.addEventListener("click", function(e){
 
 </body>
 </html>
+
 
 
 
