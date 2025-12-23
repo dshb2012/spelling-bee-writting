@@ -84,6 +84,9 @@ th,td{
   vertical-align:top;
 }
 tr.active td{background:#fff3bf;}
+tr{
+  scroll-margin-top:260px;
+}
 
 .word{
   font-size:16px;
@@ -256,7 +259,8 @@ th:nth-child(4),td:nth-child(4){width:20%;}
     <button class="btn pause" id="pauseBtn" onclick="pauseResume()">⏸ pause</button>
     <button class="btn stop" onclick="stopAll()">⏹ stop</button>
   </div>
-
+</div>
+  
 <!-- TABLE -->
 <div class="wrapper">
 <table>
@@ -291,7 +295,7 @@ th:nth-child(4),td:nth-child(4){width:20%;}
   </div>
 
   <!-- 4. TIMER -->
-  <div class="bottom-btn timer-btn" id="timer">20</div>
+  <div class="bottom-btn timer-btn" id="timer">⏱️ 20</div>
 
 </div>
 
@@ -513,3 +517,4 @@ function closeHelp(e){
 
 </body>
 </html>
+
