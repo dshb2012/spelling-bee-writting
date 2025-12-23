@@ -49,10 +49,51 @@ html,body{
   margin-bottom:10px;
   font-family:'Comfortaa', cursive;
 }
+.hiddenTop{
+  display:none;
+}
+    
 #topBtns{
   display:flex;
-  gap:25px;
+  gap:8px;
+  flex-wrap:nowrap;
 }
+
+/* PERKECIL BUTTON */
+#topBtns .btn{
+  height:40px;
+  font-size:14px;
+  border-radius:14px;
+}
+
+/* GROUP START ROW */
+.top-group{
+  display:flex;
+  align-items:center;
+  gap:4px;
+  background:#5fb3a2;
+  border-radius:14px;
+  padding:4px;
+}
+
+.top-group input{
+  width:42px;
+  height:30px;
+  border:none;
+  border-radius:8px;
+  text-align:center;
+  font-size:13px;
+}
+
+.top-group button{
+  height:30px;
+  border:none;
+  border-radius:8px;
+  padding:0 8px;
+  font-size:13px;
+  font-weight:800;
+}  
+  
 .btn{
   flex:1;
   height:44px;
@@ -258,12 +299,22 @@ th:nth-child(4),td:nth-child(4){width:20%;}
     Aplikasi ini membantu latihan Spelling Bee untuk writing dan speaking melalui pembacaan kata, kalimat, dan ejaan secara otomatis
   </div>
 
-  <div id="topBtns">
-    <button class="btn play" onclick="playAll()">▶ Play All</button>
-    <button class="btn pause" id="pauseBtn" onclick="pauseResume()">⏸ Pause</button>
-    <button class="btn stop" onclick="stopAll()">⏹ Stop</button>
+  <div id="topBtns" class="hiddenTop">
+
+  <button class="btn play" onclick="playAll()">▶ PLAY ALL</button>
+
+  <button class="btn pause" id="pauseBtn" onclick="pauseResume()">⏸ PAUSE</button>
+
+  <button class="btn stop" onclick="stopAll()">⏹ STOP</button>
+
+  <!-- PLAY AT ROW -->
+  <div class="top-group">
+    <input type="number" id="startRow" value="1" min="1">
+    <button onclick="playFromRow()">GO</button>
   </div>
+
 </div>
+
   
 <!-- TABLE -->
 <div class="wrapper">
@@ -424,6 +475,10 @@ function loadCSV(e){
     rows=lines;
     render();
     
+    // TAMPILKAN TOMBOL ATAS SETELAH UPLOAD
+    document.getElementById("topBtns").classList.remove("hiddenTop");
+
+    //TAMPILKAN HEADER TABEL
     document.getElementById("tableHead").style.display = "table-header-group";
   };
   r.readAsText(e.target.files[0]);
@@ -523,6 +578,7 @@ function closeHelp(e){
 
 </body>
 </html>
+
 
 
 
