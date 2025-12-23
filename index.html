@@ -64,9 +64,22 @@ html,body{
 
 /* PERKECIL BUTTON */
 #topBtns .btn{
-  height:40px;
-  font-size:14px;
-  border-radius:14px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  height:56px;
+}
+
+#topBtns .icon{
+  font-size:20px;
+  line-height:1;
+}
+
+#topBtns .text{
+  font-size:11px;
+  font-weight:800;
 }
 
 /* GROUP START ROW */
@@ -295,6 +308,27 @@ th:nth-child(4),td:nth-child(4){width:20%;}
   color:#fff;
   font-weight:800;
 }
+/* RIPPLE EFFECT */
+.ripple{
+  position:relative;
+  overflow:hidden;
+}
+
+.ripple span.ripple-circle{
+  position:absolute;
+  border-radius:50%;
+  transform:scale(0);
+  animation:ripple 0.6s linear;
+  background:rgba(255,255,255,0.6);
+}
+
+@keyframes ripple{
+  to{
+    transform:scale(4);
+    opacity:0;
+  }
+}
+  
 </style>
 </head>
 
@@ -310,11 +344,20 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 
   <div id="topBtns" class="hiddenTop">
 
-  <button class="btn play" onclick="playAll()">▶ PLAY ALL</button>
+<button class="btn play">
+  <span class="icon">▶</span>
+  <span class="text">PLAY ALL</span>
+</button>
 
-  <button class="btn pause" id="pauseBtn" onclick="pauseResume()">⏸ PAUSE</button>
+<button class="btn pause" id="pauseBtn">
+  <span class="icon">⏸</span>
+  <span class="text">PAUSE</span>
+</button>
 
-  <button class="btn stop" onclick="stopAll()">⏹ STOP</button>
+<button class="btn stop">
+  <span class="icon">⏹</span>
+  <span class="text">STOP</span>
+</button>
 
   <!-- PLAY AT ROW -->
   <div class="top-group">
@@ -577,10 +620,30 @@ function closeHelp(e){
     helpOverlay.style.display="none";
   }
 }
+document.addEventListener("click", function(e){
+  const btn = e.target.closest("button");
+  if(!btn) return;
+
+  btn.classList.add("ripple");
+
+  const circle = document.createElement("span");
+  circle.classList.add("ripple-circle");
+
+  const d = Math.max(btn.clientWidth, btn.clientHeight);
+  circle.style.width = circle.style.height = d + "px";
+  circle.style.left = e.offsetX - d / 2 + "px";
+  circle.style.top = e.offsetY - d / 2 + "px";
+
+  btn.appendChild(circle);
+
+  setTimeout(()=>circle.remove(),600);
+});
+  
 </script>
 
 </body>
 </html>
+
 
 
 
