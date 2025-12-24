@@ -114,24 +114,23 @@ html,body{
 }
 
 #topBtns .icon{
-  font-size:20px;
+  font-size:15px;
   line-height:1;
 }
 
 #topBtns .text{
-  font-size:15px;
+  font-size:11px;
   font-weight:800;
 }
 
 /* GROUP START ROW */
 .top-group{
   flex:1;
-  height:40px
+  height:40px;
   display:flex;
   align-items:center;
   gap:6px;
   background:#e1f2bb;
-  border-radius:18px;
   padding:6px;
   border:2px solid #ffffff;
 }
@@ -144,19 +143,23 @@ html,body{
   text-align:center;
   font-size:13px;
 }
-
-.top-group button{
+.go-btn{
   height:100%;
-  flex:1;
-  border:none;
+  padding:0 10px;
+  border:2px solid #ffffff;
   border-radius:12px;
-  padding:0 8px;
-  font-size:15px;
-  background:#e1f2bb;
+  background:#edf4dc;
   color:#38b6ff;
   font-weight:900;
-}  
-  
+  font-size:13px;
+}
+.row-label{
+  font-size:12px;
+  font-weight:900;
+  color:#38b6ff;
+  white-space:nowrap;
+}
+ 
 .btn{
   flex:1;
   height:40px;
@@ -257,7 +260,6 @@ th:nth-child(4),td:nth-child(4){width:20%;}
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:13px;
   }
 
 /* UPLOAD */
@@ -269,7 +271,6 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 .instruction-btn{
   flex:1;
   padding:0 14px;
-  font-size:13px;
   background:##f2e590;
   color:#38b6ff;
   font-family:'Comfortaa', cursive;
@@ -322,7 +323,13 @@ th:nth-child(4),td:nth-child(4){width:20%;}
   margin-left:auto;
   background:#f2e590;
   color:#38b6ff;
-  font-size:18px;
+  }
+.bottom-btn,
+.timer-btn,
+.instruction-btn{
+  height:40px;
+  font-size:13px;
+  font-weight:900;
 }
 
 /* ===== POPUP ===== */
@@ -433,7 +440,11 @@ th:nth-child(4),td:nth-child(4){width:20%;}
   font-size:14px;
   opacity:.6;
 }
-  
+
+#startMessage {
+  pointer-events: auto;
+}
+
 #csvError{
   margin:260px auto 0;
   max-width:320px;
@@ -514,12 +525,12 @@ th:nth-child(4),td:nth-child(4){width:20%;}
 
   <!-- PLAY AT ROW -->
   <div class="top-group">
+    <span class="row-label">PLAY FROM :</span>
     <input type="number" id="startRow" value="1" min="1">
-    <button onclick="playFromRow()">GO</button>
+    <button class="go-btn" onclick="playFromRow()">GO</button>
   </div>
- </div>
-</div>
 
+    
   
 <!-- TABLE -->
 <!-- START MESSAGE -->
@@ -838,6 +849,7 @@ document.addEventListener("click", function(e){
  
 </body>
 </html>
+
 
 
 
