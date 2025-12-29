@@ -112,6 +112,7 @@ html,body{
   align-items:center;
   justify-content:center;
   gap:4px;
+  border-radius:12px;
   }
 
 #topBtns .icon{
@@ -129,18 +130,22 @@ html,body{
 .top-group{
   flex:1;
   height:var(--btn-h);
+  min-height:var(--btn-h);
+
   display:flex;
   align-items:center;
-  gap:6px;
-  border-radius:10px;
+
+  gap:8px;
+  padding:0 12px;
+
   background:#e1f2bb;
-  padding:0 8px;
   border:2px solid #ffffff;
+  border-radius:12px;   /* sama dengan .btn */
 }
 
 .top-group input{
-  width:50px;
-  height:32px;
+  width:20px;     /* nomor pages */
+  height:28px;
   border:none;
   border-radius:8px;
   text-align:center;
@@ -148,10 +153,10 @@ html,body{
   font-size:14px;
 }
 .go-btn{
-  height:32px;
+  height:28px;           /* tombol ok */
   padding:0 14px;
   border:2px solid #ffffff;
-  border-radius:12px;
+  border-radius:8px;
   background:#edf4dc;
   color:#38b6ff;
   font-weight:900;
@@ -169,7 +174,7 @@ html,body{
   height:40px;
   border:none;
   border-radius:12px;
-  font-size:13px;
+  font-size:12px;
   letter-spacing:0.5px;
   font-weight:900;
   font-family:'Comfortaa', cursive;
@@ -868,6 +873,7 @@ document.addEventListener("click", function(e){
  
 </body>
 </html>
+
 
 
 
